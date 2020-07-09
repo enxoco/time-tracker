@@ -11,7 +11,8 @@
     "core-js": "^3.6.5",
     "vue": "^2.6.11",
     "vue-feather-icons": "^5.0.0",
-    "worker-timers": "^6.0.15"
+    "worker-timers": "^6.0.15",
+    "yarn": "^1.22.4"
   },
   "devDependencies": {
     "@vue/cli-plugin-babel": "~4.4.0",
