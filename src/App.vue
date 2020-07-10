@@ -1,8 +1,8 @@
 <template>
   <div class="container" id="app">
     <div>
-      <h1 class="title">Time Tracker</h1>
-      <TodoList/>
+      <h1 class="title">Work Tracker</h1>
+      <TodoList :tasks="tasks" :totalTime="totalTime"/>
     </div>
   </div>
 </template>
@@ -13,7 +13,30 @@ export default {
   name: "App",
   components: {
     TodoList
-  }
+  },
+  data: function() {
+    return {
+      tasks: [],
+      totalTime: 0
+    }
+  },
+      mounted() {
+      if (localStorage.getItem("tasks")) {
+        try {
+          this.tasks = JSON.parse(localStorage.getItem("tasks"));
+          this.totalTime = 0;
+          this.tasks.forEach(task => {
+            this.totalTime += task.elapsedTime;
+          });
+          const date = new Date(null);
+          date.setSeconds(this.totalTime / 1000);
+          const utc = date.toUTCString();
+          this.totalTime = utc.substr(utc.indexOf(":") - 2, 8);
+        } catch (e) {
+          localStorage.removeItem("tasks");
+        }
+      }
+    },
 };
 </script>
 

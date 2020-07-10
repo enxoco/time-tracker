@@ -17,16 +17,7 @@
     props: ['tasks', 'totalTime'],
     components: {
       PlusIcon
-    },
-    mounted() {
-      if (localStorage.getItem("tasks")) {
-        try {
-          this.tasks = JSON.parse(localStorage.getItem("tasks"));
-        } catch (e) {
-          localStorage.removeItem("tasks");
-        }
-      }
-    },
+    }
   }
 </script>
 <style scoped>

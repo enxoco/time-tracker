@@ -32,8 +32,6 @@
     name: 'TodoList',
     data: function () {
       return {
-        tasks: [],
-        totalTime: 0
       }
     },
     components: {
@@ -42,31 +40,11 @@
       PauseIcon,
       TodoFooter
     },
-    props: {
-      msg: String
-    },
-    mounted() {
-      if (localStorage.getItem("tasks")) {
-        try {
-          this.tasks = JSON.parse(localStorage.getItem("tasks"));
-          this.totalTime = 0;
-          this.tasks.forEach(task => {
-            this.totalTime += task.elapsedTime;
-          });
-          const date = new Date(null);
-          date.setSeconds(this.totalTime / 1000);
-          const utc = date.toUTCString();
-          this.totalTime = utc.substr(utc.indexOf(":") - 2, 8);
-        } catch (e) {
-          localStorage.removeItem("tasks");
-        }
-      }
-    },
+    props: ['tasks', 'totalTime'],
     methods: {
       addTask() {
         this.tasks.push({ item: null, timer: 0, elapsedTime: 0, active: false });
         this.saveTasks();
-        console.log('save')
       },
       saveTasks() {
         const parsed = JSON.stringify(this.tasks);

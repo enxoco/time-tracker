@@ -42,18 +42,7 @@
       PauseIcon,
       TodoFooter
     },
-    props: {
-      msg: String
-    },
-    mounted() {
-      if (localStorage.getItem("tasks")) {
-        try {
-          this.tasks = JSON.parse(localStorage.getItem("tasks"));
-        } catch (e) {
-          localStorage.removeItem("tasks");
-        }
-      }
-    },
+    props: ['tasks', 'totalTime'],
     methods: {
       addTask() {
         this.tasks.push({ item: null, timer: 0, elapsedTime: 0, active: false });
