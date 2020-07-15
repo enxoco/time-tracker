@@ -12,12 +12,12 @@ import TodoList from './components/TodoList.vue'
 export default {
   name: "App",
   components: {
-    TodoList
+    TodoList,
   },
   data: function() {
     return {
       tasks: [],
-      totalTime: 0
+      totalTime: 0,
     }
   },
       mounted() {
@@ -47,7 +47,7 @@ export default {
   display: block;
   font-weight: 300;
   font-size: 100px;
-  color: #35495e;
+  color: #55A630;
   letter-spacing: 1px;
 }
 
@@ -86,18 +86,16 @@ h1 {
 }
 ul {
   list-style: none;
-  height: 500px;
+  /* height: 500px;
   align-items: flex-end;
   overflow-y: scroll;
-  scrollbar-face-color: #2a9d8f;
+  scrollbar-face-color: #2a9d8f; */
 }
 ul::-webkit-scrollbar {
   width: 12px;
   padding-right: 10px;
 }
-span.timer {
-  margin-right: 20px;
-}
+
 /* Track */
 ul::-webkit-scrollbar-track {
   background: #a8dadc;
@@ -117,7 +115,7 @@ input {
 }
 
 body {
-  background: #f1faee;
+  background: #efefef;
 }
 a {
   stroke: #252627;
