@@ -79,17 +79,16 @@ h1 {
   text-align: left;
 }
 .active {
-  stroke: #2a9d8f;
+  stroke: #80B918;
 }
 .inactive {
   stroke: #e63946;
 }
 ul {
   list-style: none;
-  /* height: 500px;
-  align-items: flex-end;
-  overflow-y: scroll;
-  scrollbar-face-color: #2a9d8f; */
+  height: 350px;
+  overflow: hidden;
+
 }
 ul::-webkit-scrollbar {
   width: 12px;

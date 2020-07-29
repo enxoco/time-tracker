@@ -19,7 +19,8 @@
   top: 0;
   bottom: 0;
   right: 0;
-  background: #BFD200;
+  /* background: #BFD200; */
+  background: #EDF87B;
   display: none;
   flex-direction: column;
   align-items: center;
@@ -27,7 +28,7 @@
   color: #f1faee;
   border-radius: 5px;
   border: 1px solid #007F5F;
-box-shadow: 10px 17px 31px 0px #007F5F;
+box-shadow: 10px 17px 31px 0px wheat;
   font-family: "Quicksand", "Source Sans Pro", -apple-system, BlinkMacSystemFont,
     "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
 }

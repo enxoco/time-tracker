@@ -1,13 +1,20 @@
 <template>
   <div class="flex">
     <TodoFooter v-on:add-task="addTask()" v-bind:tasks="tasks" v-bind:totalTime="totalTime" />
-    <Modal :active="modalActive" :pendingDelete="pendingDelete" v-on:close-modal="closeModal" v-on:confirm-delete="deleteTask" />
+    <Modal
+      :active="modalActive"
+      :pendingDelete="pendingDelete"
+      v-on:close-modal="closeModal"
+      v-on:confirm-delete="deleteTask"
+    />
 
     <ul>
-      <li v-for="(task, index) in tasks" :data-index="index" v-bind:key="index">
+
+      <li v-for="(task, index) in pagedTasks" :data-index="index" v-bind:key="index">
         <input v-model="task.item" @keyup="saveTasks()" />
         <span
-          class="timer" :class="{active: task.active}"
+          class="timer"
+          :class="{active: task.active}"
         >{{ (formattedElapsedTime(index)) ? formattedElapsedTime(index) : "00:00:00" }}</span>
 
         <button v-if="!task.active" @click="start(index)" :class="{ active: task.active }">
@@ -17,10 +24,19 @@
           <pause-icon size="1.5x" class="custom-class" :class="{ inactive: task.active }"></pause-icon>
         </button>
 
-        <button @click="openModal(index)" style="margin-left:5px;margin-right:5px;" v-on:confirm-delete="deleteTask">
+        <button
+          @click="openModal(index)"
+          style="margin-left:5px;margin-right:5px;"
+          v-on:confirm-delete="deleteTask"
+        >
           <trash-2-icon size="1.5x" class="custom-class inactive"></trash-2-icon>
         </button>
       </li>
+            <div v-if="pages > 1" id="pages">
+        <span v-for="i in pages" v-bind:key="i" :class="{ active : i == currentPage, 'pagination' : i }">
+          <a @click="setCurrentPage(i)">{{i}}</a>
+        </span>
+      </div>
     </ul>
   </div>
 </template>
@@ -29,14 +45,16 @@
 import { PauseIcon, PlayIcon, Trash2Icon } from "vue-feather-icons";
 import * as workerTimers from "worker-timers";
 import TodoFooter from "./TodoFooter.vue";
-import Modal from "./Modal.vue"
+import Modal from "./Modal.vue";
 
 export default {
   name: "TodoList",
   data: function() {
     return {
       modalActive: false,
-      pendingDelete: null
+      pendingDelete: null,
+      pageSize: 6,
+      currentPage: 1
     };
   },
   components: {
@@ -55,9 +73,10 @@ export default {
     saveTasks() {
       const parsed = JSON.stringify(this.tasks);
       localStorage.setItem("tasks", parsed);
-      this.pendingDelete = null
-      this.modalActive = false
+      this.pendingDelete = null;
+      this.modalActive = false;
     },
+
 
     formattedElapsedTime(index) {
       if (this.tasks[index].elapsedTime) {
@@ -89,12 +108,11 @@ export default {
       this.saveTasks();
     },
     openModal(index) {
-      this.modalActive = true
-      this.pendingDelete = index
+      this.modalActive = true;
+      this.pendingDelete = index;
     },
     deleteTask() {
-            console.log('setting pendingDelete to ')
-      this.modalActive = !this.modalActive
+      this.modalActive = !this.modalActive;
       this.tasks.splice(this.pendingDelete, 1);
       this.saveTasks();
     },
@@ -109,8 +127,27 @@ export default {
       this.totalTime = utc.substr(utc.indexOf(":") - 2, 8);
     },
     closeModal() {
-      console.log('not deleting')
-      this.modalActive = !this.modalActive
+      console.log("not deleting");
+      this.modalActive = !this.modalActive;
+    },
+    setCurrentPage(page) {
+      this.currentPage = page;
+    }
+  },
+  computed: {
+    pagedTasks: function() {
+      if (this.pages > 1) {
+      var begin = (this.currentPage - 1) * this.pageSize;
+      var end = begin + this.pageSize;
+
+      return this.tasks.slice(begin, end);
+      } else {
+        return this.tasks.slice(0, this.pageSize)
+      }
+
+    },
+    pages: function() {
+      return Math.ceil(this.tasks.length / this.pageSize);
     }
   }
 };
@@ -142,11 +179,33 @@ li {
   padding: 8.5px 10px;
   border-left: 1px solid gainsboro;
   position: absolute;
-  right: 110px;
+  right: 114px;
   top: 0px;
+  border-top-right-radius: 6px;
+  border-bottom-right-radius: 6px;
 }
 .timer.active {
-  background: #AACC00;
+  background: #aacc00;
   color: white;
+  border: 1px solid #aacc00;
+}
+.pagination {
+  border: 1px solid #aacc00;
+  color: #aacc00;
+  margin-right: 5px;
+  cursor: pointer;
+}
+.pagination a {
+    padding: 20px 10px;
+
+}
+.pagination.active {
+  color: #e63946;
+  border: 1px solid #e63946;
+}
+#pages {
+  position: absolute;
+  bottom: 10px;
+  left: 90px;
 }
 </style>
