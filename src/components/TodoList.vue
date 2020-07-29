@@ -191,7 +191,8 @@ li {
 }
 .pagination {
   border: 1px solid #aacc00;
-  color: #aacc00;
+  color:white;
+  background: #aacc00;
   margin-right: 5px;
   cursor: pointer;
 }
@@ -200,7 +201,7 @@ li {
 
 }
 .pagination.active {
-  color: #e63946;
+  background: #e63946;
   border: 1px solid #e63946;
 }
 #pages {
