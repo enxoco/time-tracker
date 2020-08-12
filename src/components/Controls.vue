@@ -32,8 +32,6 @@
     name: 'TodoList',
     data: function () {
       return {
-        tasks: [],
-        totalTime: 0
       }
     },
     components: {
