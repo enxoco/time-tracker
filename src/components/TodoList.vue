@@ -157,7 +157,7 @@ export default {
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
 .start-button {
-    background-image: url('/img/startIcon.png');
+    background-image: url('./img/startIcon.png');
     height: 70px;
     width: 70px;
     display: inline-block;
@@ -170,7 +170,7 @@ export default {
     margin-left: 30px;
 }
 .start-button:hover {
-    background-image: url('/img/startIcon.png');
+    background-image: url('./img/startIcon.png');
     height: 70px;
     width: 70px;
     display: inline-block;
@@ -182,7 +182,7 @@ export default {
     cursor: pointer;
 }
 .stop-button {
-    background-image: url('/img/stopIcon.png');
+    background-image: url('./img/stopIcon.png');
     height: 70px;
     width: 70px;
     display: inline-block;
@@ -195,7 +195,7 @@ export default {
     margin-left: 30px;
 }
 .delete-button {
-    background-image: url('/img/deleteIcon.png');
+    background-image: url('./img/deleteIcon.png');
     height: 70px;
     width: 70px;
     display: inline-block;
