@@ -1,3 +1,3 @@
 module.exports = {
-  publicPath: './time-tracker/dist/'
+  publicPath: '/time-tracker/dist/'
 }
