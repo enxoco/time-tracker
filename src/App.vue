@@ -26,9 +26,21 @@ export default {
     }
   },
   methods: {
-        addTask() {
-      this.tasks.push({ item: null, timer: 0, elapsedTime: 0, active: false, id: this.tasks.length });
+    addTask() {
+      this.tasks.push({
+        item: null,
+        timer: 0,
+        elapsedTime: 0,
+        active: false,
+        id: 0
+      });
       this.saveTasks();
+    },
+    saveTasks() {
+      const parsed = JSON.stringify(this.tasks);
+      localStorage.setItem("tasks", parsed);
+      this.pendingDelete = null;
+      this.modalActive = false;
     },
   },
       mounted() {

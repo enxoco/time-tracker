@@ -92,7 +92,6 @@ export default {
       }
       const date = new Date(null);
 
-      console.log("id", index);
       date.setSeconds(this.tasks[index].elapsedTime / 1000);
       const utc = date.toUTCString();
       return utc.substr(utc.indexOf(":") - 2, 8);
