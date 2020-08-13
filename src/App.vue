@@ -27,7 +27,7 @@ export default {
   },
   methods: {
         addTask() {
-      this.tasks.push({ item: null, timer: 0, elapsedTime: 0, active: false });
+      this.tasks.push({ item: null, timer: 0, elapsedTime: 0, active: false, id: this.tasks.length });
       this.saveTasks();
     },
   },

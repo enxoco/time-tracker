@@ -2,31 +2,41 @@
   <div>
     <!-- <TodoFooter v-on:add-task="addTask()" v-bind:tasks="tasks" v-bind:totalTime="totalTime" /> -->
 
-
     <ul class="task-list">
-    <Modal
-      :active="modalActive"
-      :pendingDelete="pendingDelete"
-      v-on:close-modal="closeModal"
-      v-on:confirm-delete="deleteTask"
-      v-on:toggle-modal="toggleModalSetting"
-    />
+      <Modal
+        :active="modalActive"
+        :pendingDelete="pendingDelete"
+        v-on:close-modal="closeModal"
+        v-on:confirm-delete="deleteTask"
+        v-on:toggle-modal="toggleModalSetting"
+      />
       <li class="task" v-for="(task, index) in pagedTasks" :data-index="index" v-bind:key="index">
         <input v-model="task.item" @keyup="saveTasks()" />
-        <span
-          class="input-timer"
-          :class="{active: task.active}"
-        >{{ (formattedElapsedTime(index)) ? formattedElapsedTime(index) : "00:00:00" }}</span>
+        <span class="input-timer" :class="{active: task.active}">{{ formattedElapsedTime(index) }}</span>
 
-          <a v-if="!task.active" @click="start(index)" class="start-button" :class="{ active: task.active }"></a>
-          <a v-if="task.active" @click="stop(index)" class="stop-button" :class="{ active: task.active }"></a>
+        <a
+          v-if="!task.active"
+          @click="start(index)"
+          class="start-button"
+          :class="{ active: task.active }"
+        ></a>
+        <a
+          v-if="task.active"
+          @click="stop(index)"
+          class="stop-button"
+          :class="{ active: task.active }"
+        ></a>
 
-          <a @click="openModal(index)" v-on:confirm-delete="deleteTask" class="delete-button"></a>
-
+        <a @click="openModal(index)" v-on:confirm-delete="deleteTask" class="delete-button"></a>
       </li>
-            <div v-if="pages > 1" id="pages">
-        <span v-for="i in pages" v-bind:key="i" :class="{ active : i == currentPage, 'pagination' : i }" @click="setCurrentPage(i)">
-          <a >{{i}}</a>
+      <div v-if="pages > 1" id="pages">
+        <span
+          v-for="i in pages"
+          v-bind:key="i"
+          :class="{ active : i == currentPage, 'pagination' : i }"
+          @click="setCurrentPage(i)"
+        >
+          <a>{{i}}</a>
         </span>
       </div>
     </ul>
@@ -47,6 +57,7 @@ export default {
       pendingDelete: null,
       pageSize: 6,
       currentPage: 1,
+      indexOffset: 0,
       dismissModal: false
     };
   },
@@ -59,7 +70,13 @@ export default {
   props: ["tasks"],
   methods: {
     addTask() {
-      this.tasks.push({ item: null, timer: 0, elapsedTime: 0, active: false });
+      this.tasks.push({
+        item: null,
+        timer: 0,
+        elapsedTime: 0,
+        active: false,
+        id: 0
+      });
       this.saveTasks();
     },
     saveTasks() {
@@ -69,16 +86,21 @@ export default {
       this.modalActive = false;
     },
 
-
     formattedElapsedTime(index) {
-      if (this.tasks[index].elapsedTime) {
-        const date = new Date(null);
-        date.setSeconds(this.tasks[index].elapsedTime / 1000);
-        const utc = date.toUTCString();
-        return utc.substr(utc.indexOf(":") - 2, 8);
+      if (this.currentPage != 1) {
+        index = index + (this.pageSize * (this.currentPage - 1));
       }
+      const date = new Date(null);
+
+      console.log("id", index);
+      date.setSeconds(this.tasks[index].elapsedTime / 1000);
+      const utc = date.toUTCString();
+      return utc.substr(utc.indexOf(":") - 2, 8);
     },
     start(index) {
+            if (this.currentPage != 1) {
+        index = index + (this.pageSize * (this.currentPage - 1));
+      }
       if (this.tasks[index].active) {
         return;
       }
@@ -90,6 +112,9 @@ export default {
       this.tasks[index].active = true;
     },
     stop(index) {
+            if (this.currentPage != 1) {
+        index = index + (this.pageSize * (this.currentPage - 1));
+      }
       workerTimers.clearInterval(this.tasks[index].timer);
       this.tasks[index].active = false;
       this.saveTasks();
@@ -100,14 +125,17 @@ export default {
       this.saveTasks();
     },
     openModal(index) {
-              this.pendingDelete = index;
+      if (this.currentPage != 1) {
+        // 1 + 5 + 2 -1
+        index = index + (this.pageSize * (this.currentPage - 1));
+      }
+      this.pendingDelete = index;
 
       if (this.dismissModal === false) {
         this.modalActive = true;
       } else {
-        this.deleteTask()
+        this.deleteTask();
       }
-
     },
     deleteTask() {
       this.modalActive = !this.modalActive;
@@ -131,21 +159,20 @@ export default {
     setCurrentPage(page) {
       this.currentPage = page;
     },
-            toggleModalSetting() {
-          this.dismissModal = !this.dismissModal
-        }
+    toggleModalSetting() {
+      this.dismissModal = !this.dismissModal;
+    }
   },
   computed: {
     pagedTasks: function() {
       if (this.pages > 1) {
-      var begin = (this.currentPage - 1) * this.pageSize;
-      var end = begin + this.pageSize;
+        var begin = (this.currentPage - 1) * this.pageSize;
+        var end = begin + this.pageSize;
 
-      return this.tasks.slice(begin, end);
+        return this.tasks.slice(begin, end);
       } else {
-        return this.tasks.slice(0, this.pageSize)
+        return this.tasks.slice(0, this.pageSize);
       }
-
     },
     pages: function() {
       return Math.ceil(this.tasks.length / this.pageSize);
@@ -157,72 +184,72 @@ export default {
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
 .start-button {
-    background-image: url('/time-tracker/dist/img/startIcon.png');
-    height: 70px;
-    width: 70px;
-    display: inline-block;
-    background-repeat: no-repeat;
-    border: 5px solid #222831;
-    border-radius: 50%;
-    background-position: center center;
-    background-color: #393E46;
-    cursor: pointer;
-    margin-left: 30px;
+  background-image: url("/time-tracker/dist/img/startIcon.png");
+  height: 70px;
+  width: 70px;
+  display: inline-block;
+  background-repeat: no-repeat;
+  border: 5px solid #222831;
+  border-radius: 50%;
+  background-position: center center;
+  background-color: #393e46;
+  cursor: pointer;
+  margin-left: 30px;
 }
 .start-button:hover {
-    background-image: url('/time-tracker/dist/img/startIcon.png');
-    height: 70px;
-    width: 70px;
-    display: inline-block;
-    background-repeat: no-repeat;
-    border: 5px solid #222831;
-    border-radius: 50%;
-    background-position: center center;
-    background-color: white;
-    cursor: pointer;
+  background-image: url("/time-tracker/dist/img/startIcon.png");
+  height: 70px;
+  width: 70px;
+  display: inline-block;
+  background-repeat: no-repeat;
+  border: 5px solid #222831;
+  border-radius: 50%;
+  background-position: center center;
+  background-color: white;
+  cursor: pointer;
 }
 .stop-button {
-    background-image: url('/time-tracker/dist/img/stopIcon.png');
-    height: 70px;
-    width: 70px;
-    display: inline-block;
-    background-repeat: no-repeat;
-    border: 5px solid #222831;
-    border-radius: 50%;
-    background-position: center center;
-    background-color: #393E46;
-    cursor: pointer;
-    margin-left: 30px;
+  background-image: url("/time-tracker/dist/img/stopIcon.png");
+  height: 70px;
+  width: 70px;
+  display: inline-block;
+  background-repeat: no-repeat;
+  border: 5px solid #222831;
+  border-radius: 50%;
+  background-position: center center;
+  background-color: #393e46;
+  cursor: pointer;
+  margin-left: 30px;
 }
 .delete-button {
-    background-image: url('/time-tracker/dist/img/deleteIcon.png');
-    height: 70px;
-    width: 70px;
-    display: inline-block;
-    background-repeat: no-repeat;
-    border: 5px solid #222831;
-    border-radius: 50%;
-    background-position: center center;
-    background-color: #393E46;
-    cursor: pointer;
+  background-image: url("/time-tracker/dist/img/deleteIcon.png");
+  height: 70px;
+  width: 70px;
+  display: inline-block;
+  background-repeat: no-repeat;
+  border: 5px solid #222831;
+  border-radius: 50%;
+  background-position: center center;
+  background-color: #393e46;
+  cursor: pointer;
 }
 .pagination {
-    font-size: 32px;
-    color: #32e0c4;
-    background: white;
-    width: 40px;
-    height: 40px;
-    display: inline-block;
-    padding: 10px;
-    margin-right: 10px;
-    text-align: center;
-    cursor: pointer;
-    border-radius: 5px;
+  font-size: 32px;
+  color: #32e0c4;
+  background: white;
+  width: 40px;
+  height: 40px;
+  display: inline-block;
+  padding: 10px;
+  margin-right: 10px;
+  text-align: center;
+  cursor: pointer;
+  border-radius: 5px;
 }
 .pagination.active {
-      background: #32e0c4;
-    color: white;
-    box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
+  background: #32e0c4;
+  color: white;
+  box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
 }
 @media (max-width: 425px) {
   .wrapper {
@@ -237,22 +264,25 @@ export default {
     padding-left: 20px;
     font-size: 16px;
   }
-  .start-button, .stop-button, .delete-button {
+  .start-button,
+  .stop-button,
+  .delete-button {
     height: 30px;
     width: 30px;
     background-size: 75%;
-    border:none;
+    border: none;
   }
   .start-button {
     margin-left: 5px;
     margin-right: 5px;
   }
-  .start-button:hover, .stop-button:hover, .delete-button:hover {
+  .start-button:hover,
+  .stop-button:hover,
+  .delete-button:hover {
     height: 30px;
     width: 30px;
     background-size: 75%;
-    border:none;
+    border: none;
   }
-  }
-
+}
 </style>
