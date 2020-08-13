@@ -1,7 +1,7 @@
 self.__precacheManifest = (self.__precacheManifest || []).concat([
   {
-    "revision": "006c2a6acfb1f433e861",
-    "url": "time-tracker/dist/css/app.bcd821a1.css"
+    "revision": "0798e95f6ed2de4ef3fe",
+    "url": "time-tracker/dist/css/app.36bf5716.css"
   },
   {
     "revision": "fa2a5959757034c9aa1fd13c8cf65a68",
@@ -28,12 +28,12 @@ self.__precacheManifest = (self.__precacheManifest || []).concat([
     "url": "time-tracker/dist/img/stopIcon.png"
   },
   {
-    "revision": "a0ac4cb58694995509058369701dcddf",
+    "revision": "ba3e27b47f5a598d8118e00e7bf89e31",
     "url": "time-tracker/dist/index.html"
   },
   {
-    "revision": "006c2a6acfb1f433e861",
-    "url": "time-tracker/dist/js/app.19bdf3f6.js"
+    "revision": "0798e95f6ed2de4ef3fe",
+    "url": "time-tracker/dist/js/app.acea8a43.js"
   },
   {
     "revision": "8886a7a0437e4a65347d",
