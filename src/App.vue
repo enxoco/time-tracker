@@ -1,10 +1,15 @@
 <template>
-  <div class="container" id="app">
-    <div>
-      <h1 class="title">Work Tracker</h1>
-      <TodoList :tasks="tasks" :totalTime="totalTime"/>
-    </div>
-  </div>
+ <div class="wrapper" id="app">
+   <div class="header">
+     <span>
+       <h1>Work Tracker</h1>
+       <p>Your To-Do list and time tracking simplified</p>
+     </span>
+     <span class="add-task-button" v-on:click="addTask">&#43;</span>
+   </div>
+   <span class="right">Total Time: {{totalTime}}</span>
+      <TodoList :tasks="tasks"/>
+ </div>
 </template>
 
 <script>
@@ -19,6 +24,12 @@ export default {
       tasks: [],
       totalTime: 0,
     }
+  },
+  methods: {
+        addTask() {
+      this.tasks.push({ item: null, timer: 0, elapsedTime: 0, active: false });
+      this.saveTasks();
+    },
   },
       mounted() {
       if (localStorage.getItem("tasks")) {
@@ -41,95 +52,116 @@ export default {
 </script>
 
 <style>
-.title {
-  font-family: "Quicksand", "Source Sans Pro", -apple-system, BlinkMacSystemFont,
-    "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
-  display: block;
-  font-weight: 300;
-  font-size: 100px;
-  color: #55A630;
-  letter-spacing: 1px;
+
+@import url('https://fonts.googleapis.com/css2?family=Oxygen:wght@400;700&display=swap');
+* {
+  margin: 0px;
 }
 
-.links {
-  padding-top: 15px;
+
+
+body {
+  font-family: 'Oxygen';
+  background: #EEEEEE;
+  color: #222831;
 }
-button {
+
+.wrapper {
+  padding: 2.5% 10%;
+}
+.wrapper .header {
+  display: grid;
+  grid-template-columns: 88% auto;
+}
+.wrapper .header .add-task-button {
+  color: white;
+  font-size: 48px;
+  font-weight: 400;
+  background: #32E0C4;
+  height: 80px;
+  width: 80px;
   border-radius: 50%;
-  padding: 5px 5px 2px 5px;
-  border: none;
-  box-shadow: 1px 1px 5px 1px gainsboro;
+  border: 5px solid #393E46;
   cursor: pointer;
-  outline: none;
-  background: #f1faee;
-}
-button:hover {
-  transform: scale3d(1.1, 1.1, 1.1);
-}
-button.active {
-  transform: scale3d(1.2, 1.2, 1.2);
-}
-body {
-  scrollbar-color: red yellow;
-}
-h1 {
-  font-family: "Montserrat";
-  font-size: 2.5rem;
-  color: #2a9d8f;
-  text-align: left;
-}
-.active {
-  stroke: #80B918;
-}
-.inactive {
-  stroke: #e63946;
-}
-ul {
-  list-style: none;
-  height: 350px;
-  overflow: hidden;
-
-}
-ul::-webkit-scrollbar {
-  width: 12px;
-  padding-right: 10px;
-}
-
-/* Track */
-ul::-webkit-scrollbar-track {
-  background: #a8dadc;
-}
-/* Handle */
-ul::-webkit-scrollbar-thumb {
-  background: #2a9d8f;
-}
-input {
-  border: 1px solid gainsboro;
-  padding: 10px;
-  box-shadow: 1px 1px 1px 1px gainsboro;
-  border-radius: 5px;
-  margin-right: 10px;
-  margin-bottom: 15px;
-  min-width: 300px;
-}
-
-body {
-  background: #efefef;
-}
-a {
-  stroke: #252627;
-}
-.custom-class {
-  -moz-user-select: none;
-  -webkit-user-select: none;
-  -ms-user-select: none;
-}
-.container {
-  margin: 0 auto;
-  min-height: 100vh;
   display: flex;
   justify-content: center;
   align-items: center;
-  text-align: center;
 }
+.wrapper .header .add-task-button:hover {
+  color: #32E0C4;
+  background: white;
+}
+.wrapper .header p {
+  padding-left: 10px;
+}
+
+h1 {
+  font-weight: 700;
+  font-size: 60px;
+  margin: 0px;
+}
+
+.task-list {
+  width: 100%;
+  padding-left: 0px;
+  margin-left: 0px;
+  margin-top: 50px;
+}
+
+.task {
+  list-style: none;
+  position: relative;
+  display: grid;
+  grid-template-columns: 60% 15% auto auto;
+  margin-bottom: 30px;
+}
+.task input {
+  width: 100%;
+  box-shadow: 1px 6px 8px rgba(57, 62, 70, 0.4);
+  border: 0px;
+  padding-left: 30px;
+  border-radius: 10px;
+  font-size: 24px;
+  font-weight: 400;
+}
+.task span {
+  /* position: absolute;
+  right: -32px; */
+  border-top-right-radius: 10px;
+  border-bottom-right-radius: 10px;
+  /* top: 0;
+  bottom: 29px; */
+  background: #32E0C4;
+    box-shadow: 1px 6px 8px rgba(57, 62, 70, 0.4);
+
+  color: white;
+  padding: 30px 40px;
+}
+
+.right {
+  float: right;
+  font-size: 14px;
+  margin-right: 25%;
+  margin-top: 20px;
+}
+@media (max-width: 425px) {
+  .wrapper {
+    padding: 20px;
+  }
+    .add-task-button {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+  }
+  .task span {
+    padding: 10px;
+  }
+  .task {
+    grid-template-columns: auto auto auto auto;
+  }
+  .task input {
+    padding-left: 10px;
+  }
+}
+
 </style>
