@@ -82,13 +82,14 @@ export default {
     saveTasks() {
       const parsed = JSON.stringify(this.tasks);
       localStorage.setItem("tasks", parsed);
+      localStorage.setItem("dismissModal", this.dismissModal);
       this.pendingDelete = null;
       this.modalActive = false;
     },
 
     formattedElapsedTime(index) {
       if (this.currentPage != 1) {
-        index = index + (this.pageSize * (this.currentPage - 1));
+        index = index + this.pageSize * (this.currentPage - 1);
       }
       const date = new Date(null);
 
@@ -97,8 +98,8 @@ export default {
       return utc.substr(utc.indexOf(":") - 2, 8);
     },
     start(index) {
-            if (this.currentPage != 1) {
-        index = index + (this.pageSize * (this.currentPage - 1));
+      if (this.currentPage != 1) {
+        index = index + this.pageSize * (this.currentPage - 1);
       }
       if (this.tasks[index].active) {
         return;
@@ -111,8 +112,8 @@ export default {
       this.tasks[index].active = true;
     },
     stop(index) {
-            if (this.currentPage != 1) {
-        index = index + (this.pageSize * (this.currentPage - 1));
+      if (this.currentPage != 1) {
+        index = index + this.pageSize * (this.currentPage - 1);
       }
       workerTimers.clearInterval(this.tasks[index].timer);
       this.tasks[index].active = false;
@@ -126,7 +127,7 @@ export default {
     openModal(index) {
       if (this.currentPage != 1) {
         // 1 + 5 + 2 -1
-        index = index + (this.pageSize * (this.currentPage - 1));
+        index = index + this.pageSize * (this.currentPage - 1);
       }
       this.pendingDelete = index;
 
@@ -161,6 +162,13 @@ export default {
     toggleModalSetting() {
       this.dismissModal = !this.dismissModal;
     }
+  },
+  mounted() {
+    localStorage.getItem("dismissModal")
+      ? (this.dismissModal = true)
+      : (this.dismissModal = false);
+
+    console.log("dismiss ", this.dismissModal);
   },
   computed: {
     pagedTasks: function() {

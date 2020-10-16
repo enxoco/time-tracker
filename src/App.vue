@@ -1,29 +1,29 @@
 <template>
- <div class="wrapper" id="app">
-   <div class="header">
-     <span>
-       <h1>Work Tracker</h1>
-       <p>Your To-Do list and time tracking simplified</p>
-     </span>
-     <span class="add-task-button" v-on:click="addTask">&#43;</span>
-   </div>
-   <span class="right">Total Time: {{totalTime}}</span>
-      <TodoList :tasks="tasks"/>
- </div>
+  <div class="wrapper" id="app">
+    <div class="header">
+      <span>
+        <h1>Work Tracker</h1>
+        <p>Your To-Do list and time tracking simplified</p>
+      </span>
+      <span class="add-task-button" v-on:click="addTask">&#43;</span>
+    </div>
+    <span class="right">Total Time: {{totalTime}}</span>
+    <TodoList :tasks="tasks" />
+  </div>
 </template>
 
 <script>
-import TodoList from './components/TodoList.vue'
+import TodoList from "./components/TodoList.vue";
 export default {
   name: "App",
   components: {
-    TodoList,
+    TodoList
   },
   data: function() {
     return {
       tasks: [],
-      totalTime: 0,
-    }
+      totalTime: 0
+    };
   },
   methods: {
     addTask() {
@@ -41,40 +41,37 @@ export default {
       localStorage.setItem("tasks", parsed);
       this.pendingDelete = null;
       this.modalActive = false;
-    },
+    }
   },
-      mounted() {
-      if (localStorage.getItem("tasks")) {
-        try {
-          this.tasks = JSON.parse(localStorage.getItem("tasks"));
-          this.totalTime = 0;
-          this.tasks.forEach(task => {
-            this.totalTime += task.elapsedTime;
-          });
-          const date = new Date(null);
-          date.setSeconds(this.totalTime / 1000);
-          const utc = date.toUTCString();
-          this.totalTime = utc.substr(utc.indexOf(":") - 2, 8);
-        } catch (e) {
-          localStorage.removeItem("tasks");
-        }
+  mounted() {
+    if (localStorage.getItem("tasks")) {
+      try {
+        this.tasks = JSON.parse(localStorage.getItem("tasks"));
+        this.totalTime = 0;
+        this.tasks.forEach(task => {
+          this.totalTime += task.elapsedTime;
+        });
+        const date = new Date(null);
+        date.setSeconds(this.totalTime / 1000);
+        const utc = date.toUTCString();
+        this.totalTime = utc.substr(utc.indexOf(":") - 2, 8);
+      } catch (e) {
+        localStorage.removeItem("tasks");
       }
-    },
+    }
+  }
 };
 </script>
 
 <style>
-
-@import url('https://fonts.googleapis.com/css2?family=Oxygen:wght@400;700&display=swap');
+@import url("https://fonts.googleapis.com/css2?family=Oxygen:wght@400;700&display=swap");
 * {
   margin: 0px;
 }
 
-
-
 body {
-  font-family: 'Oxygen';
-  background: #EEEEEE;
+  font-family: "Oxygen";
+  background: #eeeeee;
   color: #222831;
 }
 
@@ -89,18 +86,18 @@ body {
   color: white;
   font-size: 48px;
   font-weight: 400;
-  background: #32E0C4;
+  background: #32e0c4;
   height: 80px;
   width: 80px;
   border-radius: 50%;
-  border: 5px solid #393E46;
+  border: 5px solid #393e46;
   cursor: pointer;
   display: flex;
   justify-content: center;
   align-items: center;
 }
 .wrapper .header .add-task-button:hover {
-  color: #32E0C4;
+  color: #32e0c4;
   background: white;
 }
 .wrapper .header p {
@@ -143,8 +140,8 @@ h1 {
   border-bottom-right-radius: 10px;
   /* top: 0;
   bottom: 29px; */
-  background: #32E0C4;
-    box-shadow: 1px 6px 8px rgba(57, 62, 70, 0.4);
+  background: #32e0c4;
+  box-shadow: 1px 6px 8px rgba(57, 62, 70, 0.4);
 
   color: white;
   padding: 30px 40px;
@@ -160,7 +157,7 @@ h1 {
   .wrapper {
     padding: 20px;
   }
-    .add-task-button {
+  .add-task-button {
     position: absolute;
     top: 20px;
     right: 20px;
@@ -175,5 +172,4 @@ h1 {
     padding-left: 10px;
   }
 }
-
 </style>
