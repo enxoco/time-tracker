@@ -3,23 +3,28 @@
     <div class="modal-heading">
       <h2 class="modal-title">Delete Task?</h2>
       <p>Are you sure you want to delete this task?</p>
-      <span><small>This action cannot be undone</small></span>
+      <span>
+        <small>This action cannot be undone</small>
+      </span>
     </div>
     <div class="modal-controls">
-      <a @click="$emit('confirm-delete', pendingDelete)" class="confirm">Confirm Deletion</a>
-      <a @click="$emit('close-modal')" class="cancel">Cancel Deletion</a>
+      <a @click="$emit('confirm-delete', pendingDelete)" class="confirm">Confirm</a>
+      <a @click="$emit('close-modal')" class="cancel">Cancel</a>
     </div>
-<label class="container">Don’t show this confirmation in the future
-  <input type="checkbox" @click="$emit('toggle-modal')">
-  <span class="checkmark"></span>
-</label>
-
+    <label class="container">
+      Don’t show this confirmation in the future
+      <input
+        type="checkbox"
+        @click="$emit('toggle-modal')"
+      />
+      <span class="checkmark"></span>
+    </label>
   </div>
 </template>
 
 <style scoped>
 * {
-  font-family: 'Oxygen';
+  font-family: "Oxygen";
 }
 .modal {
   z-index: 99999;
@@ -37,39 +42,41 @@
   color: #f1faee;
   border-radius: 5px;
   min-height: 400px;
-
-
+}
+.modal-controls {
+  width: 100%;
+  display: flex;
+  justify-content: space-around;
 }
 .modal a {
-    border-radius: 10px;
-    padding: 20px 10px;
-    margin-left:10px;
-    margin-right: 10px;
-    margin-top: 20px;
-    font-size: 18px;
-    font-weight: 700;
-    cursor: pointer;
+  border-radius: 10px;
+  padding: 20px 50px;
+  margin-left: 10px;
+  margin-right: 10px;
+  margin-top: 20px;
+  font-size: 25px;
+  font-weight: 700;
+  cursor: pointer;
 }
 .modal a:hover {
   background: #eee;
   color: #222831;
 }
 .modal .confirm {
-    background: #FB5252;
-    color: #eeeeee;
+  background: #fb5252;
+  color: #eeeeee;
 }
 .modal .cancel {
-    background: #32E0C4;
-    color: #eeeeee;
-    }
+  background: #32e0c4;
+  color: #eeeeee;
+}
 .modal.active {
   display: flex;
 }
 .modal-title {
   text-align: center;
-  color: #EEEEEE;
+  color: #eeeeee;
   font-size: 72px;
-
 }
 p {
   font-size: 24px;
@@ -114,7 +121,7 @@ p {
 
 /* When the checkbox is checked, add a blue background */
 .container input:checked ~ .checkmark {
-  background-color: #2196F3;
+  background-color: #2196f3;
 }
 
 /* Create the checkmark/indicator (hidden when not checked) */
@@ -160,9 +167,8 @@ p {
 <script>
 export default {
   props: ["active", "pendingDelete"],
-    data: function() {
-    return {
-    };
-  },
+  data: function() {
+    return {};
+  }
 };
 </script>
