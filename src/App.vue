@@ -9,6 +9,7 @@
    </div>
    <span class="right">Total Time: {{totalTime}}</span>
       <TodoList :tasks="tasks"/>
+      <span class="copyright">Copyright 2020 <a href="https://iliveinaterminal.com">Mike Conrad</a>.  Part of <a href="https://theopensuite.com">The Open Suite</a><a href="https://github.com/enxoco/time-tracker" style="float:right;">Get the code</a></span>
  </div>
 </template>
 
@@ -174,6 +175,17 @@ h1 {
   .task input {
     padding-left: 10px;
   }
+}
+.copyright {
+    position: absolute;
+    bottom: 20px;
+    left: 10%;
+    right: 30%;
+}
+.copyright a {
+  font-weight: bold;
+  text-decoration: none;
+  color:#393e46;
 }
 
 </style>
