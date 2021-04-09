@@ -3,16 +3,16 @@
     <ul>
       <li v-for="(task, index) in tasks" :data-index="index" v-bind:key="index">
         <input v-model="task.item" @keyup="saveTasks()" />
-        <button @click="start(index)" :class="{ active: task.active }">
+        <button @click="start(task.id)" :class="{ active: task.active }">
           <play-icon size="1.5x" class="custom-class active" :class="{ active: task.active }"></play-icon>
         </button>
-        <button @click="stop(index)">
+        <button @click="stop(task.id)">
           <pause-icon size="1.5x" class="custom-class" :class="{ inactive: task.active }"></pause-icon>
         </button>
-        <button @click="deleteTask(index)">
+        <button @click="deleteTask(task.id)">
           <x-icon size="1.5x" class="custom-class inactive"></x-icon>
         </button>
-        <span class="timer">{{ (formattedElapsedTime(index)) ? formattedElapsedTime(index) : "00:00:00" }}</span>
+        <span class="timer">{{ (formattedElapsedTime(task.id)) ? formattedElapsedTime(task.id) : "00:00:00" }}</span>
       </li>
     </ul>
     <TodoFooter v-on:add-task="addTask()"/>
@@ -42,46 +42,49 @@
     },
     props: ['tasks', 'totalTime'],
     methods: {
-      addTask() {
-        this.tasks.push({ item: null, timer: 0, elapsedTime: 0, active: false });
-        this.saveTasks();
-        console.log('save')
-      },
+
       saveTasks() {
         const parsed = JSON.stringify(this.tasks);
         localStorage.setItem("tasks", parsed);
       },
 
       formattedElapsedTime(index) {
-        if (this.tasks[index].elapsedTime) {
+        let task = this.tasks.filter(task => task.id == index)
+        if (task.elapsedTime) {
           const date = new Date(null);
-          date.setSeconds(this.tasks[index].elapsedTime / 1000);
+          date.setSeconds(task.elapsedTime / 1000);
           const utc = date.toUTCString();
           return utc.substr(utc.indexOf(":") - 2, 8);
         }
       },
       start(index) {
-        if (this.tasks[index].active) {
+        let task = this.tasks.filter(task => task.id == index)
+
+        if (task.active) {
           return;
         }
-        this.tasks[index].timer = workerTimers.setInterval(() => {
-          this.tasks[index].elapsedTime += 1000;
+        task.timer = workerTimers.setInterval(() => {
+          task.elapsedTime += 1000;
           this.saveTasks();
         }, 1000);
-        this.tasks[index].active = true;
+        task.active = true;
       },
       stop(index) {
-        workerTimers.clearInterval(this.tasks[index].timer);
-        this.tasks[index].active = false;
+        let task = this.tasks.filter(task => task.id == index)
+
+        workerTimers.clearInterval(task.timer);
+        task.active = false;
         this.saveTasks();
       },
       reset(index) {
-        this.tasks[index].elapsedTime = 0;
-        this.tasks[index].active = false;
+        let task = this.tasks.filter(task => task.id == index)
+
+        task.elapsedTime = 0;
+        task.active = false;
         this.saveTasks();
       },
       deleteTask(index) {
-        this.tasks.splice(index, 1);
+        this.tasks.filter(task => task.id != index)
         this.saveTasks();
       }
     }
