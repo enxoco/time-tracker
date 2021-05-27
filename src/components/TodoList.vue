@@ -86,7 +86,7 @@ export default {
     // VueAutosuggest,
     Modal
   },
-  props: ["tasks", "selectedDay", "taskHeadings"],
+  props: ["tasks", "selectedDay", "taskHeadings", "weekOffset"],
 
   methods: {
     saveTasks() {
@@ -199,7 +199,7 @@ export default {
     pagedTasks: function() {
       let index = this.selectedDay
       var curr = new Date; // get current date
-      var first = curr.getDate() - curr.getDay() + +index; // First day is the day of the month - the day of the week
+      var first = (curr.getDate() - this.weekOffset) - curr.getDay() + +index; // First day is the day of the month - the day of the week
       let [month, day] = new Date(curr.setDate(first)).toLocaleDateString("en-US").split("/");
       this.tasks.map(task => {
         if (task.date == `${month}/${day}`){
