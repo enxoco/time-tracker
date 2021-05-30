@@ -10,9 +10,12 @@
         v-on:confirm-delete="deleteTask"
         v-on:toggle-modal="toggleModalSetting"
       />
-      <li class="task" v-for="(task, index) in pagedTasks" :data-index="index" v-bind:key="index" :class="{visible: task.visible}">
+      <li class="task" v-for="(task, index) in pagedTasks" :data-index="index" v-bind:key="index" :class="{visible: task.visible}" >
         <!-- <span class="button suggestion-button">Recent<br>Tasks</span> -->
-        <input class="client" v-model="task.item" @change="saveTasks()" placeholder="client / project" @keyup="saveTasks()"/>
+      <ul class="autosuggest" rel="autosuggest" v-if="selectedTaskId && selectedTaskId === index" :data-index="index">
+        <li v-for="(task, index) in suggestedTasks" :key="index" @click="updatedSelectedTasks($event, task.code, task.name)"  >{{ task.name }}</li>
+      </ul>
+        <input class="client" v-model="task.item" @change="saveTasks()" placeholder="client / project" @keyup="autoSuggestTask($event)" @click="setSelectedTask(index)" />
         <input class="input-code" type="text" v-model="task.code" placeholder="project code" @keyup="saveTasks()"/>
 
         <input type="text" class="input-timer" :class="{active: task.active}" :data-index="index" :data-elapsed="task.elapsedTime" :value="formattedElapsedTime(index)" @change="convertHourToSeconds($event, index)"/>
@@ -45,6 +48,7 @@
         </span>
       </div>
     </ul>
+
   </div>
 </template>
 
@@ -66,6 +70,8 @@ export default {
       indexOffset: 0,
       dismissModal: false,
       selectedTaskId: 0,
+      taskQuery: null,
+      selectedTask: null,
       clients: [
         '1st Franklin',
         'Cadence',
@@ -89,6 +95,21 @@ export default {
   props: ["tasks", "selectedDay", "taskHeadings", "weekOffset"],
 
   methods: {
+    setSelectedTask(index){
+      this.selectedTaskId = index
+
+    },
+    updatedSelectedTasks(event, code, name){
+      this.selectedTaskId = null
+      console.log('reset this.selectedTaskId')
+
+      const taskId = event.currentTarget.parentNode.dataset.index
+      this.tasks[taskId].code = code
+      this.tasks[taskId].item = name
+
+      this.saveTasks()
+      // this.tasks[index].code = code
+    },
     saveTasks() {
       const parsed = JSON.stringify(this.tasks);
       localStorage.setItem("tasks", parsed);
@@ -181,10 +202,7 @@ export default {
       return new Date()
     },
     autoSuggestTask(event){
-      if (event.target.value == ""){
-        event.target.value = JSON.stringify(this.taskHeadings)
-      }
-      
+      this.taskQuery = event.target.value
     }
 
   },
@@ -196,6 +214,13 @@ export default {
     console.log("dismiss ", this.dismissModal);
   },
   computed: {
+    suggestedTasks: function(){
+      if (this.taskQuery){
+        return this.taskHeadings.filter(heading => heading.name.toLowerCase().includes(this.taskQuery.toLowerCase()))
+      } else {
+        return this.taskHeadings
+      }
+    },
     pagedTasks: function() {
       let index = this.selectedDay
       var curr = new Date; // get current date
@@ -222,7 +247,7 @@ export default {
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
 .start-button {
-  background-image: url("/time-tracker/dist/img/fi-rr-play.svg");
+  background-image: url("/img/fi-rr-play.svg");
   background-size: 35px 35px;
   height: 50px;
   width: 50px;
@@ -237,7 +262,7 @@ export default {
   background-position: center;
 }
 .start-button:hover {
-  background-image: url("/time-tracker/dist/img/fi-rr-play.svg");
+  background-image: url("/img/fi-rr-play.svg");
   height: 50px;
   width: 50px;
   display: inline-block;
@@ -249,7 +274,7 @@ export default {
   cursor: pointer;
 }
 .stop-button {
-  background-image: url("/time-tracker/dist/img/fi-rr-stop.svg");
+  background-image: url("/img/fi-rr-stop.svg");
   height: 50px;
   width: 50px;
   display: inline-block;
@@ -263,7 +288,7 @@ export default {
   margin-left: 30px;
 }
 .delete-button {
-  background-image: url("/time-tracker/dist/img/fi-rr-cross-small.svg");
+  background-image: url("/img/fi-rr-cross-small.svg");
   height: 50px;
   width: 50px;
   display: inline-block;
@@ -353,13 +378,25 @@ div#autosuggest-autosuggest__results {
 } */
 
 .autosuggest {
-  position: absolute;
-  top: 50px;
-  background: lightgreen;
-  padding: 50px;
-  z-index: 9;
-  color: white;
+position: absolute;
+    top: 50px;
+    z-index: 9;
+    color: black;
+    background: white;
+    list-style: none;
+    padding: 20px;
+
 }
+.autosuggest li {
+  cursor: pointer;
+  margin-bottom: 5px;
+    padding: 5px;
+
+}
+.autosuggest li:hover {
+  background: #eeeeee;
+}
+
 @media (max-width: 425px) {
   .wrapper {
     padding: 20px;

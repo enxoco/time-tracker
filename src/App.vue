@@ -69,6 +69,7 @@
       :taskHeadings="taskHeadings"
       v-if="preferences.view === 'tasks'"
       :weekOffset="preferences.weekOffset"
+      :timesheet="timesheet"
     />
       <Timesheet :tasks="tasks" :dateCodes="dateCodes" :timesheet="timesheet" v-if="preferences.view === 'timesheet'" :totalTime="getTotalTime()" :weekOffset="preferences.weekOffset" />
 
@@ -241,6 +242,7 @@ export default {
       this.taskHeadings.map(name => {
         timesheet[name].tasks = this.tasks.filter(item => item.item === name && this.getTaskByWeek(item))
       })
+
       this.timesheet = null
       //timesheet object is sorted by days so monday is 0, tuesday is 1, wednesday is 2, etc.
       this.timesheet = timesheet
@@ -312,6 +314,17 @@ export default {
         }
       });
       return this.secondsToHms(totalTime).substr(0,5);
+    },
+        compareByTaskName(a, b) {
+      const locA = a.name;
+      const locB = b.name;
+      let comparison = 0;
+      if (locA > locB) {
+        comparison = 1;
+      } else if (locA < locB) {
+        comparison = -1;
+      }
+      return comparison;
     },
     getDailyTime(index) {
       var curr = new Date(); // get current date
@@ -419,9 +432,12 @@ export default {
     tasks: function () {
       let taskHeadings = [];
       this.tasks.map((task) => {
-        taskHeadings.push(task.item);
+        if (task.item != null) {
+        taskHeadings.push({'name': task.item, 'code': task.code});
+
+        }
       });
-      this.taskHeadings = [...new Set(taskHeadings)];
+      this.taskHeadings = [...new Set(taskHeadings)].filter((v,i,a)=>a.findIndex(t=>(t.name === v.name))===i)
     },
     preferences: function () {
       this.savePrefs();
@@ -457,7 +473,7 @@ body {
   grid-template-columns: 88% auto;
 }
 .c-button__control.export-tasks {
-  background-image: url(/time-tracker/dist/img/fi-rr-disk.svg);
+  background-image: url(/img/fi-rr-disk.svg);
   background-size: 30px;
   background-repeat: no-repeat;
   background-position: center;
